@@ -7,6 +7,9 @@ import { useQuery } from '@tanstack/react-query';
 
 import { PaginatedRes, People } from '../types';
 import styles from '../styles/Home.module.css';
+import { Homeworld } from '../components/Homeworld';
+import { SWAPI_BASE_URL } from '../constants';
+import { getId } from '../helpers';
 
 const FIRST_PAGE_NUMBER = 1;
 
@@ -16,9 +19,7 @@ const Home: NextPage = () => {
 	const fetchCharacters = (
 		page = FIRST_PAGE_NUMBER
 	): Promise<PaginatedRes<People>> =>
-		fetch(`https://swapi.dev/api/people/?page=${pageNum}`).then(res =>
-			res.json()
-		);
+		fetch(`${SWAPI_BASE_URL}/people/?page=${pageNum}`).then(res => res.json());
 
 	const { isLoading, isError, data, isFetching, isPreviousData, refetch } =
 		useQuery({
@@ -44,8 +45,10 @@ const Home: NextPage = () => {
 				</p>
 				<span>Current Page: {pageNum}</span>
 				<button
-					onClick={() => setPageNum(old => Math.max(old - 1, 1))}
-					disabled={pageNum === 1}
+					onClick={() =>
+						setPageNum(old => Math.max(old - 1, FIRST_PAGE_NUMBER))
+					}
+					disabled={pageNum === FIRST_PAGE_NUMBER}
 				>
 					Previous Page
 				</button>{' '}
@@ -88,20 +91,15 @@ const CharacterCard = ({
 	character: People;
 	id: number;
 }) => {
-	const fetchPlanet = () => fetch(character.homeworld).then(res => res.json());
-
-	const planetId = character.homeworld.split('/').reverse()[1];
-
-	const { isLoading, data } = useQuery({
-		queryKey: ['plant', planetId],
-		queryFn: fetchPlanet,
-	});
+	const planetId = getId(character.homeworld);
 
 	return (
 		<Link href={`/character/${id}`} className={styles.card} key={id}>
 			<h2>{character.name}</h2>
 			<p>Gender: {character.gender}</p>
-			<p>Home World: {isLoading ? 'Loading...' : data.name}</p>
+			<p>
+				Home World: <Homeworld id={planetId} />
+			</p>
 		</Link>
 	);
 };

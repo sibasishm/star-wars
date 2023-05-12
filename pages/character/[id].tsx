@@ -7,6 +7,9 @@ import { useRouter } from 'next/router';
 import styles from '../../styles/Character.module.css';
 import { People } from '../../types';
 import Link from 'next/link';
+import { Homeworld } from '../../components/Homeworld';
+import { getId } from '../../helpers';
+import { Movie } from '../../components/Movie';
 
 const Character: NextPage = () => {
 	const router = useRouter();
@@ -22,18 +25,18 @@ const Character: NextPage = () => {
 		queryFn: () => fetchCharacter(characterId),
 	});
 
-	if (isLoading) {
-		return <h2>Loading...</h2>;
-	}
-
 	if (error) {
 		return <h2>Something is not right!</h2>;
+	}
+
+	if (!data || isLoading) {
+		return <h2>Loading...</h2>;
 	}
 
 	return (
 		<div className={styles.main}>
 			<Head>
-				<title>{`Star Wars | ${data?.name}`}</title>
+				<title>{`Star Wars | ${data.name}`}</title>
 				<meta
 					name='description'
 					content='Character details from the Star Wars universe'
@@ -42,12 +45,19 @@ const Character: NextPage = () => {
 			</Head>
 			<Link href='/'>Go Back</Link>
 			<div className='card'>
-				<h2>{data?.name}</h2>
-				<p>Gender: {data?.gender}</p>
-				<p>Eye Color: {data?.eye_color}</p>
-				<p>Hair Color: {data?.hair_color}</p>
-				<p>Home Planet: {data?.homeworld}</p>
-				<p>Starred in: {data?.films.join(', ')}</p>
+				<h2>{data.name}</h2>
+				<p>Gender: {data.gender}</p>
+				<p>Eye Color: {data.eye_color}</p>
+				<p>Hair Color: {data.hair_color}</p>
+				<p>
+					Home Planet: <Homeworld id={getId(data.homeworld)} />
+				</p>
+				<p>Films: </p>
+				<ol>
+					{data.films.map(filmEndpoint => (
+						<Movie id={getId(filmEndpoint)} />
+					))}
+				</ol>
 			</div>
 		</div>
 	);
