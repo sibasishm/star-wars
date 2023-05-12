@@ -1,5 +1,6 @@
 import type { NextPage } from 'next';
 
+import fetch from 'cross-fetch';
 import Head from 'next/head';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/router';
@@ -28,7 +29,7 @@ const Character: NextPage = () => {
 	if (error) {
 		return (
 			<div className={styles.container}>
-				<h2>Something is not right!</h2>
+				<h2 className={styles.main}>Something is not right!</h2>
 			</div>
 		);
 	}
@@ -36,7 +37,7 @@ const Character: NextPage = () => {
 	if (!data || isLoading) {
 		return (
 			<div className={styles.container}>
-				<h2>Loading...</h2>
+				<h2 className={styles.main}>Loading...</h2>
 			</div>
 		);
 	}
@@ -63,7 +64,7 @@ const Character: NextPage = () => {
 					<p>
 						Home Planet: <Homeworld id={getId(data.homeworld)} />
 					</p>
-					<p>Films: </p>
+					<p>Appeared in: </p>
 					<ol>
 						{data.films.map(filmEndpoint => (
 							<Movie id={getId(filmEndpoint)} />
