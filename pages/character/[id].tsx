@@ -26,15 +26,23 @@ const Character: NextPage = () => {
 	});
 
 	if (error) {
-		return <h2>Something is not right!</h2>;
+		return (
+			<div className={styles.container}>
+				<h2>Something is not right!</h2>
+			</div>
+		);
 	}
 
 	if (!data || isLoading) {
-		return <h2>Loading...</h2>;
+		return (
+			<div className={styles.container}>
+				<h2>Loading...</h2>
+			</div>
+		);
 	}
 
 	return (
-		<div className={styles.main}>
+		<div className={styles.container}>
 			<Head>
 				<title>{`Star Wars | ${data.name}`}</title>
 				<meta
@@ -43,21 +51,25 @@ const Character: NextPage = () => {
 				/>
 				<link rel='icon' href='/favicon.ico' />
 			</Head>
-			<Link href='/'>Go Back</Link>
-			<div className='card'>
-				<h2>{data.name}</h2>
-				<p>Gender: {data.gender}</p>
-				<p>Eye Color: {data.eye_color}</p>
-				<p>Hair Color: {data.hair_color}</p>
-				<p>
-					Home Planet: <Homeworld id={getId(data.homeworld)} />
-				</p>
-				<p>Films: </p>
-				<ol>
-					{data.films.map(filmEndpoint => (
-						<Movie id={getId(filmEndpoint)} />
-					))}
-				</ol>
+			<div className={styles.main}>
+				<Link href='/' className={styles.backLink}>
+					Go Back
+				</Link>
+				<h1 className={styles.title}>{data.name}</h1>
+				<main className={styles.card}>
+					<p>Gender: {data.gender}</p>
+					<p>Eye Color: {data.eye_color}</p>
+					<p>Hair Color: {data.hair_color}</p>
+					<p>
+						Home Planet: <Homeworld id={getId(data.homeworld)} />
+					</p>
+					<p>Films: </p>
+					<ol>
+						{data.films.map(filmEndpoint => (
+							<Movie id={getId(filmEndpoint)} />
+						))}
+					</ol>
+				</main>
 			</div>
 		</div>
 	);

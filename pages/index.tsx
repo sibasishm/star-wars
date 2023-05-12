@@ -21,12 +21,11 @@ const Home: NextPage = () => {
 	): Promise<PaginatedRes<People>> =>
 		fetch(`${SWAPI_BASE_URL}/people/?page=${pageNum}`).then(res => res.json());
 
-	const { isLoading, isError, data, isFetching, isPreviousData, refetch } =
-		useQuery({
-			queryKey: ['characters', pageNum],
-			queryFn: () => fetchCharacters(pageNum),
-			keepPreviousData: true,
-		});
+	const { isLoading, isError, data, isPreviousData, refetch } = useQuery({
+		queryKey: ['characters', pageNum],
+		queryFn: () => fetchCharacters(pageNum),
+		keepPreviousData: true,
+	});
 
 	return (
 		<div className={styles.container}>
@@ -38,31 +37,32 @@ const Home: NextPage = () => {
 				/>
 				<link rel='icon' href='/favicon.ico' />
 			</Head>
+			<h1 className={styles.title}>Star Wars Universe!</h1>
+			<p className={styles.description}>
+				All your favourite Star Wars characters in one place...
+			</p>
 			<div className={styles.main}>
-				<h1 className={styles.title}>Star Wars Universe!</h1>
-				<p className={styles.description}>
-					All your favourite Star Wars characters in one place...
-				</p>
-				<span>Current Page: {pageNum}</span>
-				<button
-					onClick={() =>
-						setPageNum(old => Math.max(old - 1, FIRST_PAGE_NUMBER))
-					}
-					disabled={pageNum === FIRST_PAGE_NUMBER}
-				>
-					Previous Page
-				</button>{' '}
-				<button
-					onClick={() => {
-						if (!isPreviousData && data?.next) {
-							setPageNum(old => old + 1);
+				<p>Current Page: {pageNum}</p>
+				<div>
+					<button
+						onClick={() =>
+							setPageNum(old => Math.max(old - 1, FIRST_PAGE_NUMBER))
 						}
-					}}
-					disabled={isPreviousData || !data?.next}
-				>
-					Next Page
-				</button>
-				{isFetching ? <span> Fetching more...</span> : null}{' '}
+						disabled={pageNum === FIRST_PAGE_NUMBER}
+					>
+						Previous Page
+					</button>{' '}
+					<button
+						onClick={() => {
+							if (!isPreviousData && data?.next) {
+								setPageNum(old => old + 1);
+							}
+						}}
+						disabled={isPreviousData || !data?.next}
+					>
+						Next Page
+					</button>
+				</div>
 				<main className={styles.content}>
 					{isLoading ? (
 						<div>Loading...</div>
