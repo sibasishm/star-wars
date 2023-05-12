@@ -1,6 +1,9 @@
-import { afterAll, afterEach, beforeAll } from 'vitest';
+import { afterAll, afterEach, beforeAll, vi } from 'vitest';
 import { server } from './server';
 
-beforeAll(() => server.listen({ onUnhandledRequest: 'error' }));
+beforeAll(() => {
+	vi.mock('next/router', () => require('next-router-mock'));
+	server.listen({ onUnhandledRequest: 'error' });
+});
 afterAll(() => server.close());
 afterEach(() => server.resetHandlers());
